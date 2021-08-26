@@ -10,6 +10,10 @@ inputs:
   title:
     description: The title for a release.
     required: true
+  apply:
+    description: Whether to apply the release.
+    required: false
+    default: 'false'
 runs:
   using: composite
   steps:
@@ -44,7 +48,7 @@ runs:
           git tag --force "$MAJOR_TAG"
         fi
 
-        if [[ '${{ inputs.action }}' == "true" ]]; then
+        if [[ '${{ inputs.apply }}' == "true" ]]; then
           gh release create "$TAG" --title '${{ inputs.title }}' --notes-file /tmp/notes.txt
           git push --force --tags
         fi
