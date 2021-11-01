@@ -1,5 +1,5 @@
-name: gh-pr-create(1)
-description: Run gh-pr-create(1)
+name: actions-release
+description: actions-rele
 inputs:
   token:
     description: GitHub access token for GitHub CLI
