@@ -12,8 +12,7 @@ inputs:
     required: true
   apply:
     description: Whether to apply the release.
-    required: false
-    default: 'false'
+    type: boolean
 runs:
   using: composite
   steps:
