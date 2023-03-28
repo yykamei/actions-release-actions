@@ -29,7 +29,7 @@ runs:
 
         gh release list
 
-        if [[ "${{ inputs.overwrite-major-minor" == "true" ]]; then
+        if [[ "${{ inputs.overwrite-major-minor }}" == "true" ]]; then
           git tag --force "$MINOR_TAG"
 
           if [[ "$MAJOR_TAG" != "v0" ]]; then
