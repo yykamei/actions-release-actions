@@ -8,9 +8,13 @@ inputs:
   tag:
     description: The tag for a release.
     required: true
-  title:
-    description: The title for a release.
-    required: true
+  overwrite-major-minor:
+    description: |
+      Whether to overwrite the existing major or minor tags.
+      For example, when `tag` is `v1.2.0`, this action will overwrite `v1.2` and `v1`
+      with the latest commit. The default value is `true`.
+    required: false
+    default: 'true'
   apply:
     description: Whether to apply the release.
     type: boolean
@@ -20,36 +24,21 @@ runs:
     - name: git-push(1)
       shell: bash -euxo pipefail {0}
       run: |
-        # Check whether the version is described in the source code.
-        grep -F "## [${TAG}]" CHANGELOG.md
-        grep -F '## [Unreleased]' CHANGELOG.md && exit 1
-
         MINOR_TAG="${TAG%.*}"
         MAJOR_TAG="${TAG%%.*}"
 
-        # Extract the latest changelog entries to put them into GitHub release notes.
-        hit=0
-        while IFS="" read -r line; do
-          if [[ "$line" == "## ["*"]("*")"* ]]; then
-            hit=$((hit + 1))
-            continue
-          fi
-          if [[ "$hit" == "1" ]]; then
-            echo "$line" >> /tmp/notes.txt
-          fi
-        done < CHANGELOG.md
-
         gh release list
-        cat /tmp/notes.txt
 
-        git tag --force "$MINOR_TAG"
+        if [[ "${{ inputs.overwrite-major-minor" == "true" ]]; then
+          git tag --force "$MINOR_TAG"
 
-        if [[ "$MAJOR_TAG" != "v0" ]]; then
-          git tag --force "$MAJOR_TAG"
+          if [[ "$MAJOR_TAG" != "v0" ]]; then
+            git tag --force "$MAJOR_TAG"
+          fi
         fi
 
         if [[ '${{ inputs.apply }}' == "true" ]]; then
-          gh release create "$TAG" --title '${{ inputs.title }}' --notes-file /tmp/notes.txt
+          gh release create "$TAG" --generate-notes
           git push --force --tags
         fi
 
