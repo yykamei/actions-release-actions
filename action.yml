@@ -21,7 +21,7 @@ inputs:
 runs:
   using: composite
   steps:
-    - name: git-push(1)
+    - name: Create a release on GitHub
       shell: bash -euxo pipefail {0}
       run: |
         MINOR_TAG="${TAG%.*}"
