@@ -14,7 +14,7 @@ inputs:
       For example, when `tag` is `v1.2.0`, this action will overwrite `v1.2` and `v1`
       with the latest commit. The default value is `true`.
     required: false
-    default: 'true'
+    default: "true"
   apply:
     description: Whether to apply the release.
     type: boolean
